@@ -1,6 +1,7 @@
 import math
 import random
 
+# Board dimensions and players
 ROWS = 6;
 COLS = 7;
 
@@ -8,14 +9,18 @@ EMPTY = 0;
 PLAYER = 1;
 AI = 2
 
+# Determin if the game is over (win or draw)
 def is_terminal_node(board):
     return check_winner(board, PLAYER) or check_winner(board, AI) or len(get_valid_moves(board)) == 0
+
+# Remove the most recent piece from the column
 def undo_move(board, col):
     for row in range(ROWS):
         if board[row][col] != EMPTY:
             board[row][col] = EMPTY
             break
-        
+
+ # Evaluate a slice of 4 cells and assign score       
 def evaluate_window(window, piece):
     score = 0
     opp_piece = PLAYER if piece == AI else AI
@@ -29,6 +34,7 @@ def evaluate_window(window, piece):
         score -= 80
     return score
 
+# Score the board based on potential advantages for the give piece
 def score_position(board, piece):
     score = 0
     center_array = [board[r][COLS // 2] for r in range(ROWS)]
@@ -52,6 +58,7 @@ def score_position(board, piece):
             score += evaluate_window(window, piece)
     return score
 
+# Minimax algorithm with a alpha-beta pruning to decide the AI's move
 def minimax(board, depth, alpha, beta, maximizingPlayer):
     valid_locations = get_valid_moves(board)
     is_terminal = is_terminal_node(board)
@@ -94,21 +101,26 @@ def minimax(board, depth, alpha, beta, maximizingPlayer):
             if alpha >= beta:
                 break
         return best_col, value
+
+# Create an empty game board
 def create_board():
     return [[EMPTY for _ in range(COLS)] for _ in range(ROWS)]
 
+# Display the current state of the board in terminal
 def print_board(board):
     for row in board:
         print(" | ".join(str(cell) for cell in row))
     print("-" * (COLS * 4 - 1))
     print("    ".join(str(i) for i in range(COLS)))
 
+# Place a piece in the specified column
 def make_move(board, col, piece):
     for row in reversed(range(ROWS)):
         if board[row][col] == EMPTY:
             board[row][col] = piece
             return row, col
 
+# Check if a player has 4 in a row (horizontal, vertical, or diagonal)
 def check_winner(board, piece):
     for row in range(ROWS):
         for col in range(COLS - 3):
@@ -129,6 +141,7 @@ def check_winner(board, piece):
                 return True
     return False
 
+# Get list of valid columns where a move can be made
 def get_valid_moves(board):
     return [col for col in range(COLS) if board[0][col] == EMPTY]
 
@@ -136,9 +149,11 @@ def ai_move(board):
     valid_cols = get_valid_moves(board)
     return random.choice(valid_cols)
 
+# Main game loop
 board = create_board();
 game_over = False
 turn = 0 #0 = Human, 1 = AI
+
 print_board(board)
 
 while not game_over:
@@ -172,4 +187,5 @@ while not game_over:
         print("It's a draw!")
         game_over = True
     
+    # Alternate turns
     turn = (turn + 1) % 2
