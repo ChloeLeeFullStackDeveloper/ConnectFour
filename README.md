@@ -57,6 +57,6 @@ python3 connect4.py
 
 ## 👩‍💻 Author
 
-**Eunsuk (Chloe) Lee**  
+**Chloe Lee**  
 CPSC 3750 - Summer 2025  
-Assignment #2: Game Playing with AI  
+Assignment #2: Game Playing with AI
